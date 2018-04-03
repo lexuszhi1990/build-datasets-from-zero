@@ -85,7 +85,7 @@ class FaiPoseGenerator(object):
 
             category = anno_dict['image_category']
             category_id = Cat_List.index(category) + 1
-            annotation={'segmentation': [], 'bbox': [], 'mask': [],
+            annotation={'segmentation': [], 'bbox': [], 'keypoints': [],
                 'iscrowd': 0, 'image_id': image['id'], 'category_id': category_id}
             annotation['id'] = generate_secret_key(16)
 
