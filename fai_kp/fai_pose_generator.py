@@ -68,13 +68,14 @@ class FaiPoseGenerator(object):
             exit(-1)
 
         for anno_dict in csv.DictReader(data_anno_path.open('r')):
+            category = anno_dict['image_category']
             image_path = anno_dict['image_id']
             ab_image_path = Path(self.source_dir, image_path.lower())
             if not ab_image_path.exists():
                 print("Path does not exist: {}".format(ab_image_path))
                 continue
             else:
-                print('processing %s' % image_path)
+                print('processing %s %s' % (self.image_set, image_path))
 
             image={}
             image_raw = cv2.imread(ab_image_path.as_posix())
@@ -82,9 +83,9 @@ class FaiPoseGenerator(object):
             image_name = image_path.split('/')[-1]
             image['file_name'] = image_name
             image['id'] = image_name.split('.')[0]
+            image['category'] = category
             self.images.append(image)
 
-            category = anno_dict['image_category']
             category_id = Cat_List.index(category) + 1
             annotation={'segmentation': [], 'bbox': [], 'keypoints': [],
                 'iscrowd': 0, 'image_id': image['id'], 'category_id': category_id}

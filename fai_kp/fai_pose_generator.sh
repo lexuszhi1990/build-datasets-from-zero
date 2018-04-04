@@ -4,7 +4,7 @@
 
 SOURCE_DIR='/mnt/data/fai_kp_coco'
 DEST_DIR='/mnt/data/fai_kp_coco'
-IMAGE_SET='val'
+IMAGE_SET='train'
 
 python3.6 fai_pose_generator.py --source_dir $SOURCE_DIR \
                                 --image_set $IMAGE_SET \
