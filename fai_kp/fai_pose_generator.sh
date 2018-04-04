@@ -2,9 +2,9 @@
 # -*- coding:utf-8 -*-
 # Generate train & val data.
 
-SOURCE_DIR='/mnt/data/warm_up_train_20180222/'
-DEST_DIR='/mnt/data/fai_kp_coco/'
-IMAGE_SET='train'
+SOURCE_DIR='/mnt/data/fai_kp_coco'
+DEST_DIR='/mnt/data/fai_kp_coco'
+IMAGE_SET='val'
 
 python3.6 fai_pose_generator.py --source_dir $SOURCE_DIR \
                                 --image_set $IMAGE_SET \

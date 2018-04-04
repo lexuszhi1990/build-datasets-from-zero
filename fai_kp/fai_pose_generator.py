@@ -24,7 +24,6 @@ def generate_secret_key(length=8):
     """Generate secret key"""
     return "".join([choice(string.hexdigits).lower() for i in range(length)])
 
-
 class FaiPoseGenerator(object):
 
     def __init__(self, source_dir, image_set, dest_dir, bbox=True, mask=False, keypoint=False):
@@ -40,8 +39,6 @@ class FaiPoseGenerator(object):
         self.categories = []
         self.annotations = []
         self.data_coco = {}
-
-
 
     def create_categories(self):
         for index, cat in enumerate(Cat_List):
@@ -65,17 +62,21 @@ class FaiPoseGenerator(object):
 
 
     def generate_label(self):
-        data_anno_path = Path(self.source_dir, 'Annotations', self.image_set + '.csv')
-        assert data_anno_path.exists(), "data_anno_path not exists"
+        data_anno_path = Path(self.source_dir, 'annotations', self.image_set + '.csv')
+        if not data_anno_path.exists():
+            print("path %s not exists" % data_anno_path)
+            exit(-1)
 
         for anno_dict in csv.DictReader(data_anno_path.open('r')):
-            image={}
             image_path = anno_dict['image_id']
-            ab_image_path = Path(self.source_dir, image_path)
+            ab_image_path = Path(self.source_dir, image_path.lower())
             if not ab_image_path.exists():
                 print("Path does not exist: {}".format(ab_image_path))
                 continue
+            else:
+                print('processing %s' % image_path)
 
+            image={}
             image_raw = cv2.imread(ab_image_path.as_posix())
             image['height'], image['width'], _ = image_raw.shape
             image_name = image_path.split('/')[-1]
@@ -99,8 +100,6 @@ class FaiPoseGenerator(object):
             anno_kps = [[aa[0], aa[1], aa[2]+1] for aa in anno_kp.tolist()]
             annotation['keypoints'] = [ p for kp in anno_kps for p in kp]
             self.annotations.append(annotation)
-
-            print('processing %s end' % image_path)
 
     def data2coco(self):
         self.data_coco['images'] = self.images
