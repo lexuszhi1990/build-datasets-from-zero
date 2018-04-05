@@ -157,5 +157,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     fai_pose_generator = FaiPoseGenerator(args.source_dir, args.image_set, args.dest_dir)
+    fai_pose_generator.create_categories()
     fai_pose_generator.generate_label()
     fai_pose_generator.save()
