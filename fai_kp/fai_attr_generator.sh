@@ -10,7 +10,7 @@ DEST_DIR='/mnt/data'
 
 if [ x$1 == x ] ; then
     echo "no image set input, use 'train' as default image set"
-    IMAGE_SET='train'
+    IMAGE_SET='test_attr'
 else
     IMAGE_SET=$1
 fi
