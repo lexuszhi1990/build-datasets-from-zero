@@ -77,8 +77,38 @@ class FaiPoseGenerator(object):
         for cat in self.categories:
             if cat['name'] == name:
                 return cat
-
         return None
+
+    def _build_annotation(self, anno_dict):
+        image_name = anno_dict['image_id'].split('/')[-1]
+        cat_name = anno_dict['image_category']
+        cat_dict = self.get_category(cat_name)
+        category_id = FAI_CAT_LIST.index(cat_name) + 1
+        annotation={'segmentation': [], 'bbox': [], 'keypoints': [],
+                    'iscrowd': 0, 'image_id': anno_dict['new_img_id'],
+                    'category_id': category_id}
+        annotation['id'] = secrets.randbits(64)
+        anno_kp = np.array([anno_dict.get(key).split('_') for key in cat_dict['keypoints']]).astype(np.int16)
+
+        if self.generate_bbox:
+            bbox_anno_kp = anno_kp[np.where(anno_kp[:, 2]>=0)].astype(np.uint16)
+            xmax, ymax, _ = bbox_anno_kp.max(axis=0)
+            xmin, ymin, _ = bbox_anno_kp.min(axis=0)
+            bbox = np.array([xmin, ymin, xmax-xmin, ymax-ymin]).tolist()
+            annotation['bbox'] = bbox
+            annotation['area'] = int(xmax-xmin) * int(ymax-ymin)
+
+        if self.generate_segm:
+            segm_anno_kp = anno_kp[np.where(anno_kp[:, 2]>0)].astype(np.uint16)
+            mask_op = segm_anno_kp[:, :2].flatten()
+            annotation['segmentation'] = [mask_op.tolist()]
+
+        if self.generate_kp:
+            anno_kps = [[aa[0], aa[1], aa[2]+1] for aa in anno_kp.tolist()]
+            annotation['"num_keypoints"'] = len(anno_kps)
+            annotation['keypoints'] = [ p for kp in anno_kps for p in kp]
+
+        return annotation
 
     def generate_label(self):
         data_anno_path = Path(self.source_dir, 'annotations', self.image_set + '.csv')
@@ -87,52 +117,26 @@ class FaiPoseGenerator(object):
             exit(-1)
 
         for anno_dict in csv.DictReader(data_anno_path.open('r')):
-            cat_name = anno_dict['image_category']
-            cat_dict = self.get_category(cat_name)
-            image_path = anno_dict['image_id']
-            ab_image_path = Path(self.source_dir, image_path.lower())
+            cat_name, image_name = anno_dict['image_id'].split('/')[1:3]
+            ab_image_path = Path(self.source_dir, 'images', self.image_set, cat_name, image_name)
             if not ab_image_path.exists():
                 print("Path does not exist: {}".format(ab_image_path))
                 continue
             else:
-                print('processing %s %s' % (self.image_set, image_path))
+                print('processing %s %s' % (self.image_set, ab_image_path))
 
             image={}
             image_raw = cv2.imread(ab_image_path.as_posix())
             image['height'], image['width'], _ = image_raw.shape
-            image_name = image_path.split('/')[-1]
             image['file_name'] = image_name
             image['id'] = secrets.randbits(64)
-
             image['category'] = cat_name
             self.images.append(image)
 
-            category_id = FAI_CAT_LIST.index(cat_name) + 1
-            annotation={'segmentation': [], 'bbox': [], 'keypoints': [],
-                'iscrowd': 0, 'image_id': image['id'], 'category_id': category_id}
-            annotation['id'] = secrets.randbits(64)
-
-            anno_kp = np.array([anno_dict.get(key).split('_') for key in cat_dict['keypoints']]).astype(np.int16)
-
-            if self.generate_bbox:
-                bbox_anno_kp = anno_kp[np.where(anno_kp[:, 2]>=0)].astype(np.uint16)
-                xmax, ymax, _ = bbox_anno_kp.max(axis=0)
-                xmin, ymin, _ = bbox_anno_kp.min(axis=0)
-                bbox = np.array([xmin, ymin, xmax-xmin, ymax-ymin]).tolist()
-                annotation['bbox'] = bbox
-                annotation['area'] = int(xmax-xmin) * int(ymax-ymin)
-
-            if self.generate_segm:
-                segm_anno_kp = anno_kp[np.where(anno_kp[:, 2]>0)].astype(np.uint16)
-                mask_op = segm_anno_kp[:, :2].flatten()
-                annotation['segmentation'] = [mask_op.tolist()]
-
-            if self.generate_kp:
-                anno_kps = [[aa[0], aa[1], aa[2]+1] for aa in anno_kp.tolist()]
-                annotation['"num_keypoints"'] = len(anno_kps)
-                annotation['keypoints'] = [ p for kp in anno_kps for p in kp]
-
-            self.annotations.append(annotation)
+            if self.image_set.find('test') < 0:
+                anno_dict['new_img_id'] = image['id']
+                annotation = self._build_annotation(anno_dict)
+                self.annotations.append(annotation)
 
     def data2coco(self):
         self.data_coco['images'] = self.images

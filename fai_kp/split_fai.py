@@ -1,3 +1,4 @@
+#!/usr/bin/env python3.6
 # -*- coding: utf-8 -*-
 
 import csv
@@ -5,10 +6,10 @@ from pathlib import Path
 from random import random
 
 # warmup_source_dir = '/mnt/data/warm_up_train_20180222'
-source_dir = '/mnt/data/train'
-output_dir = '/mnt/data/fai_kp_coco'
+source_dir = '/mnt/data/total_train'
+output_dir = '/mnt/data/total_train'
 
-data_anno_path = Path(source_dir, 'Annotations', 'train.csv')
+data_anno_path = Path(source_dir, 'annotations', 'fai_original.csv')
 if not data_anno_path.exists():
     print('source annotation file %s not exist...' % data_anno_path.as_posix())
     exit(1)
