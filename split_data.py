@@ -358,3 +358,10 @@ trousers_skeleton = [ [trousers_kp.index(ep[0])+1, trousers_kp.index(ep[1])+1] f
 outwear_kp = [ KEYPONT_NAME_DICT[kp_index] for kp_index in [1, 4, 11, 10, 6, 8, 18, 19, 9, 7, 12, 13, 5, 2] ]
 outwear_skeleton_ep = [ [KEYPONT_NAME_DICT[kp_ep[0]], KEYPONT_NAME_DICT[kp_ep[1]]] for kp_ep in [[1, 4], [4, 11], [11, 10], [10, 6], [6, 8], [8, 18], [18, 19], [19, 9], [9, 7], [7, 12], [12, 13], [13, 5], [5, 2], [2, 1], [8, 9]] ]
 outwear_skeleton = [ [outwear_kp.index(ep[0])+1, outwear_kp.index(ep[1])+1] for ep in outwear_skeleton_ep ]
+
+
+
+### difficult dress
+
+/mnt/data/images/dress/ec3cf1bc8f83449074054f2dc2ef1f6e.jpg
+/mnt/data/images/outwear/72d1be6f2534f3c279f24d0d561b82f6.jpg
