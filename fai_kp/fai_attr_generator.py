@@ -130,13 +130,7 @@ class FaiPoseGenerator(object):
             image['height'], image['width'], _ = image_raw.shape
             image['file_name'] = image_name
             image['id'] = secrets.randbits(64)
-            image['category'] = anno_dict['image_category']
             self.images.append(image)
-
-            if self.image_set.find('test') < 0:
-                anno_dict['new_img_id'] = image['id']
-                annotation = self._build_annotation(anno_dict)
-                self.annotations.append(annotation)
 
     def data2coco(self):
         self.data_coco['images'] = self.images
@@ -163,6 +157,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     fai_pose_generator = FaiPoseGenerator(args.source_dir, args.image_set, args.dest_dir)
-    fai_pose_generator.create_categories()
     fai_pose_generator.generate_label()
     fai_pose_generator.save()
