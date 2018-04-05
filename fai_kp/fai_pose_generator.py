@@ -11,29 +11,50 @@ import cv2
 from pathlib import Path
 import string
 from random import choice
+import secrets
 
 IMAGE_DIR = 'images'
 ANNO_DIR = 'annotations'
 RESULTS_DIR = 'results'
 
-Cat_List = ['blouse', 'dress', 'outwear', 'skirt', 'trousers']
+
+
+FAI_CAT_LIST = ['blouse', 'dress', 'outwear', 'skirt', 'trousers']
 KEYPONT_NAMES = ['neckline_left', 'neckline_right', 'center_front', 'shoulder_left', 'shoulder_right', 'armpit_left', 'armpit_right', 'waistline_left', 'waistline_right', 'cuff_left_in', 'cuff_left_out', 'cuff_right_in', 'cuff_right_out', 'top_hem_left', 'top_hem_right', 'waistband_left', 'waistband_right', 'hemline_left', 'hemline_right', 'crotch', 'bottom_left_in', 'bottom_left_out', 'bottom_right_in', 'bottom_right_out']
 
+blouse_kp = ['center_front', 'neckline_left', 'shoulder_left', 'cuff_left_out', 'cuff_left_in', 'armpit_left', 'top_hem_left', 'top_hem_right', 'armpit_right', 'cuff_right_in', 'cuff_right_out', 'shoulder_right', 'neckline_right']
+blouse_skeleton_ep = [['center_front', 'neckline_left'], ['neckline_left', 'shoulder_left'], ['shoulder_left', 'cuff_left_out'], ['cuff_left_out', 'cuff_left_in'], ['cuff_left_in', 'armpit_left'], ['armpit_left', 'top_hem_left'], ['top_hem_left', 'top_hem_right'], ['top_hem_right', 'armpit_right'], ['armpit_right', 'cuff_right_in'], ['cuff_right_in', 'cuff_right_out'], ['cuff_right_out', 'shoulder_right'], ['shoulder_right', 'neckline_right'], ['neckline_right', 'center_front'], ['armpit_left', 'armpit_right']]
+blouse_skeleton = [ [blouse_kp.index(ep[0])+1, blouse_kp.index(ep[1])+1] for ep in blouse_skeleton_ep ]
 
-def generate_secret_key(length=8):
-    """Generate secret key"""
-    return "".join([choice(string.hexdigits).lower() for i in range(length)])
+dress_kp = ['center_front', 'neckline_left', 'shoulder_left', 'cuff_left_out', 'cuff_left_in', 'armpit_left', 'waistline_left', 'hemline_left', 'hemline_right', 'waistline_right', 'armpit_right', 'cuff_right_in', 'cuff_right_out', 'shoulder_right', 'neckline_right']
+dress_skeleton_ep = [['center_front', 'neckline_left'], ['neckline_left', 'shoulder_left'], ['shoulder_left', 'cuff_left_out'], ['cuff_left_out', 'cuff_left_in'], ['cuff_left_in', 'armpit_left'], ['armpit_left', 'waistline_left'], ['waistline_left', 'hemline_left'], ['hemline_left', 'hemline_right'], ['hemline_right', 'waistline_right'], ['waistline_right', 'armpit_right'], ['armpit_right', 'cuff_right_in'], ['cuff_right_in', 'cuff_right_out'], ['cuff_right_out', 'shoulder_right'], ['shoulder_right', 'neckline_right'], ['neckline_right', 'center_front'], ['waistline_left', 'waistline_right'], ['shoulder_left', 'waistline_left'], ['shoulder_right', 'waistline_right']]
+dress_skeleton = [ [dress_kp.index(ep[0])+1, dress_kp.index(ep[1])+1] for ep in dress_skeleton_ep ]
+
+skirt_kp = ['waistband_left', 'waistband_right', 'hemline_right', 'hemline_left']
+skirt_skeleton_ep = [['waistband_left', 'waistband_right'], ['waistband_right', 'hemline_right'], ['hemline_right', 'hemline_left'], ['hemline_left', 'waistband_left']]
+skirt_skeleton = [ [skirt_kp.index(ep[0])+1, skirt_kp.index(ep[1])+1] for ep in skirt_skeleton_ep ]
+
+trousers_kp = ['waistband_left', 'waistband_right', 'bottom_right_out', 'bottom_right_in', 'crotch', 'bottom_left_in', 'bottom_left_out']
+trousers_skeleton_ep = [['waistband_left', 'waistband_right'], ['waistband_right', 'bottom_right_out'], ['bottom_right_out', 'bottom_right_in'], ['bottom_right_in', 'crotch'], ['crotch', 'bottom_left_in'], ['bottom_left_in', 'bottom_left_out'], ['bottom_left_out', 'waistband_left'], ['crotch', 'waistband_left'], ['crotch', 'waistband_right']]
+trousers_skeleton = [ [trousers_kp.index(ep[0])+1, trousers_kp.index(ep[1])+1] for ep in trousers_skeleton_ep ]
+
+ # neckline_left  neckline_right  shoulder_left  shoulder_right  armpit_left
+ # armpit_right  waistline_left  waistline_right  cuff_left_in  cuff_left_out
+ # cuff_right_in  cuff_right_out  top_hem_left top_hem_right
+outwear_kp = ['neckline_left', 'shoulder_left', 'cuff_left_out', 'cuff_left_in', 'armpit_left', 'waistline_left', 'top_hem_left', 'top_hem_right', 'waistline_right', 'armpit_right', 'cuff_right_in', 'cuff_right_out', 'shoulder_right', 'neckline_right']
+outwear_skeleton_ep = [['neckline_left', 'shoulder_left'], ['shoulder_left', 'cuff_left_out'], ['cuff_left_out', 'cuff_left_in'], ['cuff_left_in', 'armpit_left'], ['armpit_left', 'waistline_left'], ['waistline_left', 'waistline_right'], ['waistline_right', 'armpit_right'], ['armpit_right', 'cuff_right_in'], ['cuff_right_in', 'cuff_right_out'], ['cuff_right_out', 'shoulder_right'], ['shoulder_right', 'neckline_right'], ['neckline_right', 'neckline_left'], ['top_hem_left', 'top_hem_right'], ['waistline_left', 'top_hem_left'], ['top_hem_right', 'waistline_right'], ['shoulder_left', 'waistline_left'], ['shoulder_right', 'waistline_right']]
+outwear_skeleton = [ [outwear_kp.index(ep[0])+1, outwear_kp.index(ep[1])+1] for ep in outwear_skeleton_ep ]
 
 class FaiPoseGenerator(object):
 
-    def __init__(self, source_dir, image_set, dest_dir, bbox=True, mask=False, keypoint=False):
+    def __init__(self, source_dir, image_set, dest_dir, generate_bbox=True, generate_segm=False, generate_kp=True):
 
         self.source_dir = source_dir
         self.image_set = image_set
         self.dest_dir = dest_dir
-        self.bbox = bbox
-        self.mask = mask
-        self.keypoint = keypoint
+        self.generate_bbox = generate_bbox
+        self.generate_segm = generate_segm
+        self.generate_kp = generate_kp
 
         self.images = []
         self.categories = []
@@ -41,25 +62,23 @@ class FaiPoseGenerator(object):
         self.data_coco = {}
 
     def create_categories(self):
-        for index, cat in enumerate(Cat_List):
+        for index, cat in enumerate(FAI_CAT_LIST):
             category = {}
             category['supercategory'] = cat
             category['id'] = index+1
             category['name']= cat
 
-            category['keypoints'] = ["neckline_left", "neckline_right", "center_front", "shoulder_left",
-                "shoulder_right", "armpit_left", "armpit_right", "waistline_left",
-                "waistline_right", "cuff_left_in", "cuff_left_out", "cuff_right_in",
-                "cuff_right_out", "top_hem_left", "top_hem_right", "waistband_left",
-                "waistband_right", "hemline_left", "hemline_right", "crotch",
-                "bottom_left_in", "bottom_left_out", "bottom_right_in", "bottom_right_out"]
-            category['skeleton'] = [[1,2], [1,3], [2,3], [1,4], [4,11], [6,7], [6,10], [2,5], [5,13],
-                [7,12], [4,6], [5,7], [6,14], [14,15], [7,15], [6,8], [7,9], [16,17], [8,18],
-                [9,19], [16,18], [17, 19], [16, 22], [17, 24], [16, 20], [17, 20],
-                [20, 21], [20, 23]]
+            category['keypoints'] = globals()[cat+'_kp']
+            category['skeleton'] = globals()[cat+'_skeleton']
 
             self.categories.append(category)
 
+    def get_category(self, name):
+        for cat in self.categories:
+            if cat['name'] == name:
+                return cat
+
+        return None
 
     def generate_label(self):
         data_anno_path = Path(self.source_dir, 'annotations', self.image_set + '.csv')
@@ -68,7 +87,8 @@ class FaiPoseGenerator(object):
             exit(-1)
 
         for anno_dict in csv.DictReader(data_anno_path.open('r')):
-            category = anno_dict['image_category']
+            cat_name = anno_dict['image_category']
+            cat_dict = self.get_category(cat_name)
             image_path = anno_dict['image_id']
             ab_image_path = Path(self.source_dir, image_path.lower())
             if not ab_image_path.exists():
@@ -82,24 +102,36 @@ class FaiPoseGenerator(object):
             image['height'], image['width'], _ = image_raw.shape
             image_name = image_path.split('/')[-1]
             image['file_name'] = image_name
-            image['id'] = image_name.split('.')[0]
-            image['category'] = category
+            image['id'] = secrets.randbits(64)
+
+            image['category'] = cat_name
             self.images.append(image)
 
-            category_id = Cat_List.index(category) + 1
+            category_id = FAI_CAT_LIST.index(cat_name) + 1
             annotation={'segmentation': [], 'bbox': [], 'keypoints': [],
                 'iscrowd': 0, 'image_id': image['id'], 'category_id': category_id}
-            annotation['id'] = generate_secret_key(16)
+            annotation['id'] = secrets.randbits(64)
 
-            anno_kp = np.array([anno_dict.get(key).split('_') for key in KEYPONT_NAMES]).astype(np.int16)
-            bb_anno_kp = anno_kp[np.where(anno_kp[:, 2]>=0)].astype(np.uint16)
-            xmax, ymax, _ = bb_anno_kp.max(axis=0)
-            xmin, ymin, _ = bb_anno_kp.min(axis=0)
-            bbox = np.array([xmin, ymin, xmax-xmin, ymax-ymin]).tolist()
-            annotation['bbox'] = bbox
+            anno_kp = np.array([anno_dict.get(key).split('_') for key in cat_dict['keypoints']]).astype(np.int16)
 
-            anno_kps = [[aa[0], aa[1], aa[2]+1] for aa in anno_kp.tolist()]
-            annotation['keypoints'] = [ p for kp in anno_kps for p in kp]
+            if self.generate_bbox:
+                bbox_anno_kp = anno_kp[np.where(anno_kp[:, 2]>=0)].astype(np.uint16)
+                xmax, ymax, _ = bbox_anno_kp.max(axis=0)
+                xmin, ymin, _ = bbox_anno_kp.min(axis=0)
+                bbox = np.array([xmin, ymin, xmax-xmin, ymax-ymin]).tolist()
+                annotation['bbox'] = bbox
+                annotation['area'] = int(xmax-xmin) * int(ymax-ymin)
+
+            if self.generate_segm:
+                segm_anno_kp = anno_kp[np.where(anno_kp[:, 2]>0)].astype(np.uint16)
+                mask_op = segm_anno_kp[:, :2].flatten()
+                annotation['segmentation'] = [mask_op.tolist()]
+
+            if self.generate_kp:
+                anno_kps = [[aa[0], aa[1], aa[2]+1] for aa in anno_kp.tolist()]
+                annotation['"num_keypoints"'] = len(anno_kps)
+                annotation['keypoints'] = [ p for kp in anno_kps for p in kp]
+
             self.annotations.append(annotation)
 
     def data2coco(self):
