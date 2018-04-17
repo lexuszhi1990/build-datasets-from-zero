@@ -23,18 +23,22 @@ FAI_CAT_LIST = ['blouse', 'dress', 'outwear', 'skirt', 'trousers']
 KEYPONT_NAMES = ['neckline_left', 'neckline_right', 'center_front', 'shoulder_left', 'shoulder_right', 'armpit_left', 'armpit_right', 'waistline_left', 'waistline_right', 'cuff_left_in', 'cuff_left_out', 'cuff_right_in', 'cuff_right_out', 'top_hem_left', 'top_hem_right', 'waistband_left', 'waistband_right', 'hemline_left', 'hemline_right', 'crotch', 'bottom_left_in', 'bottom_left_out', 'bottom_right_in', 'bottom_right_out']
 
 blouse_kp = ['center_front', 'neckline_left', 'shoulder_left', 'cuff_left_out', 'cuff_left_in', 'armpit_left', 'top_hem_left', 'top_hem_right', 'armpit_right', 'cuff_right_in', 'cuff_right_out', 'shoulder_right', 'neckline_right']
+blouse_mask = [['center_front', 'neckline_left', 'shoulder_left', 'armpit_left', 'top_hem_left', 'top_hem_right', 'armpit_right', 'shoulder_right', 'neckline_right'], ['neckline_left', 'shoulder_left', 'cuff_left_out', 'cuff_left_in', 'armpit_left'], ['armpit_right', 'cuff_right_in', 'cuff_right_out', 'shoulder_right', 'neckline_right']]
 blouse_skeleton_ep = [['center_front', 'neckline_left'], ['neckline_left', 'shoulder_left'], ['shoulder_left', 'cuff_left_out'], ['cuff_left_out', 'cuff_left_in'], ['cuff_left_in', 'armpit_left'], ['armpit_left', 'top_hem_left'], ['top_hem_left', 'top_hem_right'], ['top_hem_right', 'armpit_right'], ['armpit_right', 'cuff_right_in'], ['cuff_right_in', 'cuff_right_out'], ['cuff_right_out', 'shoulder_right'], ['shoulder_right', 'neckline_right'], ['neckline_right', 'center_front'], ['armpit_left', 'armpit_right'], ['armpit_left', 'shoulder_left'], ['armpit_left', 'neckline_left'], ['armpit_right', 'neckline_right'], ['armpit_right', 'shoulder_right']]
 blouse_skeleton = [ [blouse_kp.index(ep[0])+1, blouse_kp.index(ep[1])+1] for ep in blouse_skeleton_ep ]
 
 dress_kp = ['center_front', 'neckline_left', 'shoulder_left', 'cuff_left_out', 'cuff_left_in', 'armpit_left', 'waistline_left', 'hemline_left', 'hemline_right', 'waistline_right', 'armpit_right', 'cuff_right_in', 'cuff_right_out', 'shoulder_right', 'neckline_right']
+dress_mask = [['center_front', 'neckline_left', 'shoulder_left', 'armpit_left', 'waistline_left', 'hemline_left', 'hemline_right', 'waistline_right', 'armpit_right', 'shoulder_right', 'neckline_right'], ['neckline_left', 'shoulder_left', 'cuff_left_out', 'cuff_left_in', 'armpit_left'], ['armpit_right', 'cuff_right_in', 'cuff_right_out', 'shoulder_right', 'neckline_right']]
 dress_skeleton_ep = [['center_front', 'neckline_left'], ['center_front', 'neckline_right'], ['neckline_left', 'neckline_right'], ['neckline_left', 'shoulder_left'], ['neckline_left', 'armpit_left'], ['shoulder_left', 'armpit_left'], ['shoulder_left', 'cuff_left_out'], ['cuff_left_out', 'cuff_left_in'], ['cuff_left_in', 'armpit_left'], ['armpit_left', 'waistline_left'], ['armpit_left', 'hemline_left'], ['armpit_left', 'armpit_right'], ['waistline_left', 'hemline_left'], ['waistline_left', 'waistline_right'], ['hemline_left', 'hemline_right'], ['hemline_right', 'waistline_right'], ['hemline_right', 'armpit_right'], ['waistline_right', 'armpit_right'], ['armpit_right', 'shoulder_right'], ['armpit_right', 'neckline_right'], ['armpit_right', 'cuff_right_in'], ['cuff_right_in', 'cuff_right_out'], ['cuff_right_out', 'shoulder_right'], ['shoulder_right', 'neckline_right']]
 dress_skeleton = [ [dress_kp.index(ep[0])+1, dress_kp.index(ep[1])+1] for ep in dress_skeleton_ep ]
 
 skirt_kp = ['waistband_left', 'waistband_right', 'hemline_right', 'hemline_left']
+skirt_mask = [['waistband_left', 'waistband_right', 'hemline_right', 'hemline_left']]
 skirt_skeleton_ep = [['waistband_left', 'waistband_right'], ['waistband_right', 'hemline_right'], ['hemline_right', 'hemline_left'], ['hemline_left', 'waistband_left']]
 skirt_skeleton = [ [skirt_kp.index(ep[0])+1, skirt_kp.index(ep[1])+1] for ep in skirt_skeleton_ep ]
 
 trousers_kp = ['waistband_left', 'waistband_right', 'bottom_right_out', 'bottom_right_in', 'crotch', 'bottom_left_in', 'bottom_left_out']
+trousers_mask = [['waistband_left', 'waistband_right', 'crotch'], ['waistband_right', 'bottom_right_out', 'bottom_right_in', 'crotch'], ['waistband_left', 'bottom_left_out', 'bottom_left_in', 'crotch']]
 trousers_skeleton_ep = [['waistband_left', 'waistband_right'], ['waistband_right', 'bottom_right_out'], ['bottom_right_out', 'bottom_right_in'], ['bottom_right_in', 'crotch'], ['crotch', 'bottom_left_in'], ['bottom_left_in', 'bottom_left_out'], ['bottom_left_out', 'waistband_left'], ['crotch', 'waistband_left'], ['crotch', 'waistband_right']]
 trousers_skeleton = [ [trousers_kp.index(ep[0])+1, trousers_kp.index(ep[1])+1] for ep in trousers_skeleton_ep ]
 
@@ -42,12 +46,13 @@ trousers_skeleton = [ [trousers_kp.index(ep[0])+1, trousers_kp.index(ep[1])+1] f
  # armpit_right  waistline_left  waistline_right  cuff_left_in  cuff_left_out
  # cuff_right_in  cuff_right_out  top_hem_left top_hem_right
 outwear_kp = ['neckline_left', 'shoulder_left', 'cuff_left_out', 'cuff_left_in', 'armpit_left', 'waistline_left', 'top_hem_left', 'top_hem_right', 'waistline_right', 'armpit_right', 'cuff_right_in', 'cuff_right_out', 'shoulder_right', 'neckline_right']
+outwear_mask = [['neckline_left', 'shoulder_left', 'armpit_left', 'waistline_left', 'top_hem_left', 'top_hem_right', 'waistline_right', 'armpit_right', 'shoulder_right', 'neckline_right'], ['neckline_left', 'shoulder_left', 'cuff_left_out', 'cuff_left_in', 'armpit_left'], ['armpit_right', 'cuff_right_in', 'cuff_right_out', 'shoulder_right', 'neckline_right']]
 outwear_skeleton_ep = [['neckline_left', 'shoulder_left'], ['neckline_left', 'armpit_left'], ['neckline_left', 'neckline_right'], ['shoulder_left', 'cuff_left_out'], ['shoulder_left', 'armpit_left'], ['cuff_left_out', 'cuff_left_in'], ['cuff_left_in', 'armpit_left'], ['armpit_left', 'armpit_right'], ['armpit_left', 'waistline_left'], ['armpit_left', 'top_hem_left'], ['waistline_left', 'waistline_right'], ['waistline_left', 'top_hem_left'], ['top_hem_left', 'top_hem_right'], ['top_hem_right', 'waistline_right'], ['top_hem_right', 'armpit_right'], ['waistline_right', 'armpit_right'], ['armpit_right', 'cuff_right_in'], ['armpit_right', 'shoulder_right'], ['armpit_right', 'neckline_right'], ['cuff_right_in', 'cuff_right_out'], ['cuff_right_out', 'shoulder_right'], ['shoulder_right', 'neckline_right']]
 outwear_skeleton = [ [outwear_kp.index(ep[0])+1, outwear_kp.index(ep[1])+1] for ep in outwear_skeleton_ep ]
 
 class FaiPoseGenerator(object):
 
-    def __init__(self, source_dir, image_set, dest_dir, generate_bbox=True, generate_segm=False, generate_kp=True):
+    def __init__(self, source_dir, image_set, dest_dir, generate_bbox=True, generate_segm=True, generate_kp=True):
 
         self.source_dir = source_dir
         self.image_set = image_set
@@ -69,6 +74,7 @@ class FaiPoseGenerator(object):
             category['name']= cat
 
             category['keypoints'] = globals()[cat+'_kp']
+            category['mask_list'] = globals()[cat+'_mask']
             category['skeleton'] = globals()[cat+'_skeleton']
 
             self.categories.append(category)
@@ -99,9 +105,12 @@ class FaiPoseGenerator(object):
             annotation['area'] = int(xmax-xmin) * int(ymax-ymin)
 
         if self.generate_segm:
-            segm_anno_kp = anno_kp[np.where(anno_kp[:, 2]>0)].astype(np.uint16)
-            mask_op = segm_anno_kp[:, :2].flatten()
-            annotation['segmentation'] = [mask_op.tolist()]
+            for mask_kp in cat_dict['mask_list']:
+                segm_mask = np.array([anno_dict.get(key).split('_') for key in mask_kp]).astype(np.int16)
+                segm_anno_kp = segm_mask[np.where(segm_mask[:, 2]>=0)].astype(np.uint16)
+                segm_anno_op = segm_anno_kp[:, :2].flatten().tolist()
+                if len(segm_anno_op) >= 3:
+                    annotation['segmentation'].append(segm_anno_op)
 
         if self.generate_kp:
             anno_kps = [[aa[0], aa[1], aa[2]+1] for aa in anno_kp.tolist()]
