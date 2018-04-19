@@ -2,18 +2,26 @@
 # -*- coding:utf-8 -*-
 # Generate train & val data.
 
-SOURCE_DIR='/mnt/data'
-DEST_DIR='/mnt/data'
+# SOURCE_DIR='/mnt/data'
+# DEST_DIR='/mnt/data'
 # IMAGE_SET='train'
 # IMAGE_SET='val'
 # IMAGE_SET='test'
 
-if [ x$1 == x ] ; then
-    echo "no image set input, use 'train' as default image set"
-    IMAGE_SET='test_attr'
-else
-    IMAGE_SET=$1
-fi
+# SOURCE_DIR='/mnt/data/fai_attr/raw_data/test_v1'
+# DEST_DIR='/mnt/data/fai_attr/raw_data/test_v1'
+# IMAGE_SET='question'
+
+SOURCE_DIR='/mnt/data/fai_attr/raw_data/val_v1'
+DEST_DIR='/mnt/data/fai_attr/raw_data/val_v1'
+IMAGE_SET='question'
+
+# if [ x$1 == x ] ; then
+#     echo "no image set input, use 'train' as default image set"
+#     IMAGE_SET='test_attr'
+# else
+#     IMAGE_SET=$1
+# fi
 
 echo "source_dir: $SOURCE_DIR, dest_dir: $DEST_DIR, image_set: $IMAGE_SET"
 
