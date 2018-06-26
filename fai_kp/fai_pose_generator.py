@@ -13,11 +13,9 @@ import string
 from random import choice
 import secrets
 
-IMAGE_DIR = 'images'
-ANNO_DIR = 'annotations'
+IMAGE_DIR = 'Images'
+ANNO_DIR = 'Annotations'
 RESULTS_DIR = 'results'
-
-
 
 FAI_CAT_LIST = ['blouse', 'dress', 'outwear', 'skirt', 'trousers']
 KEYPONT_NAMES = ['neckline_left', 'neckline_right', 'center_front', 'shoulder_left', 'shoulder_right', 'armpit_left', 'armpit_right', 'waistline_left', 'waistline_right', 'cuff_left_in', 'cuff_left_out', 'cuff_right_in', 'cuff_right_out', 'top_hem_left', 'top_hem_right', 'waistband_left', 'waistband_right', 'hemline_left', 'hemline_right', 'crotch', 'bottom_left_in', 'bottom_left_out', 'bottom_right_in', 'bottom_right_out']
@@ -114,20 +112,21 @@ class FaiPoseGenerator(object):
 
         if self.generate_kp:
             anno_kps = [[aa[0], aa[1], aa[2]+1] for aa in anno_kp.tolist()]
-            annotation['"num_keypoints"'] = len(anno_kps)
+            annotation["num_keypoints"] = len(anno_kps)
             annotation['keypoints'] = [ p for kp in anno_kps for p in kp]
 
         return annotation
 
     def generate_label(self):
-        data_anno_path = Path(self.source_dir, 'annotations', self.image_set + '.csv')
+        data_anno_path = Path(self.source_dir, ANNO_DIR, self.image_set + '.csv')
         if not data_anno_path.exists():
             print("path %s not exists" % data_anno_path)
             exit(-1)
 
         for anno_dict in csv.DictReader(data_anno_path.open('r')):
             image_name = anno_dict['image_id']
-            ab_image_path = Path(self.source_dir, 'images', self.image_set, image_name)
+            # ab_image_path = Path(self.source_dir, 'images', self.image_set, image_name)
+            ab_image_path = Path(self.source_dir, image_name)
             if not ab_image_path.exists():
                 print("Path does not exist: {}".format(ab_image_path))
                 continue
@@ -155,7 +154,7 @@ class FaiPoseGenerator(object):
         return self.data_coco
 
     def save(self):
-        output_anno_path = Path(self.dest_dir, 'annotations', self.image_set + '.json')
+        output_anno_path = Path(self.dest_dir, ANNO_DIR, self.image_set + '.json')
         json.dump(self.data2coco(), output_anno_path.open(mode='w+'), indent=4)
         print("save results to %s" % output_anno_path)
 

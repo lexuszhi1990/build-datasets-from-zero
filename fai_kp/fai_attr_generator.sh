@@ -12,9 +12,25 @@
 # DEST_DIR='/mnt/data/fai_attr/raw_data/test_v1'
 # IMAGE_SET='question'
 
-SOURCE_DIR='/mnt/data/fai_attr/raw_data/val_v1'
-DEST_DIR='/mnt/data/fai_attr/raw_data/val_v1'
-IMAGE_SET='question'
+# SOURCE_DIR='/mnt/data/fai_attr/raw_data/val_v1'
+# DEST_DIR='/mnt/data/fai_attr/raw_data/val_v1'
+# IMAGE_SET='question'
+
+# SOURCE_DIR='/mnt/data/fai_attr/datasets_david/round2_train'
+# DEST_DIR='/mnt/data/fai_attr/datasets_david/round2_train'
+# IMAGE_SET='label'
+
+# SOURCE_DIR='/mnt/data/fai_attr/datasets_david/round2_rank'
+# DEST_DIR='/mnt/data/fai_attr/datasets_david/round2_rank'
+# IMAGE_SET='question'
+
+# SOURCE_DIR='/mnt/data/fai_attr/datasets_david/round1_round2_train'
+# DEST_DIR='/mnt/data/fai_attr/datasets_david/round1_round2_train'
+# IMAGE_SET='label'
+
+SOURCE_DIR='/mnt/data/fai_attr/datasets_david/round2_train_dir/TRAIN_V1'
+DEST_DIR='/mnt/data/fai_attr/datasets_david/round2_train_dir/TRAIN_V1'
+IMAGE_SET='train'
 
 # if [ x$1 == x ] ; then
 #     echo "no image set input, use 'train' as default image set"

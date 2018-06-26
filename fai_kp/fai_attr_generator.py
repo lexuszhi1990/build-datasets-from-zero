@@ -14,7 +14,7 @@ from random import choice
 import secrets
 
 IMAGE_DIR = 'images'
-ANNO_DIR = 'annotations'
+ANNO_DIR = 'Annotations'
 # ANNO_DIR = 'Tests'
 RESULTS_DIR = 'results'
 
@@ -140,7 +140,7 @@ class FaiPoseGenerator(object):
         return self.data_coco
 
     def save(self):
-        output_anno_path = Path(self.dest_dir, ANNO_DIR, self.image_set + '.json')
+        output_anno_path = Path(self.dest_dir, ANNO_DIR, self.image_set + '_coco.json')
         json.dump(self.data2coco(), output_anno_path.open(mode='w+'), indent=4)
         print("save results to %s" % output_anno_path)
 
